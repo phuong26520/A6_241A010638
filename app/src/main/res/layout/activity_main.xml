@@ -104,6 +104,13 @@
             android:layout_height="wrap_content"
             android:text="@string/buoi_toi" />
 
+        <TextView
+            android:id="@+id/tvDemBuoi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textStyle="italic" />
+
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/swThongBao"
             android:layout_width="match_parent"
@@ -113,6 +120,12 @@
             android:minHeight="48dp"
             android:text="@string/label_thong_bao" />
 
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/swCheDoToi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:text="@string/label_che_do_toi" />
 
         <ToggleButton
             android:id="@+id/tgUuTien"

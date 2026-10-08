@@ -9,14 +9,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -37,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private Spinner spMonHoc;
     private RadioGroup rgHeDaoTao;
     private CheckBox cbSang, cbChieu, cbToi;
-    private MaterialSwitch swThongBao;
+    private TextView tvDemBuoi;
+    private MaterialSwitch swThongBao, swCheDoToi;
     private ToggleButton tgUuTien;
 
     @Override
@@ -58,7 +62,9 @@ public class MainActivity extends AppCompatActivity {
         cbSang = findViewById(R.id.cbSang);
         cbChieu = findViewById(R.id.cbChieu);
         cbToi = findViewById(R.id.cbToi);
+        tvDemBuoi = findViewById(R.id.tvDemBuoi);
         swThongBao = findViewById(R.id.swThongBao);
+        swCheDoToi = findViewById(R.id.swCheDoToi);
         tgUuTien = findViewById(R.id.tgUuTien);
         Button btnXacNhan = findViewById(R.id.btnXacNhan);
         Button btnLamLai = findViewById(R.id.btnLamLai);
@@ -81,6 +87,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // ---- NC2: một listener dùng chung cho cả ba CheckBox, đổi là đếm lại ----
+        CompoundButton.OnCheckedChangeListener demBuoiListener = (buttonView, isChecked) -> demBuoi();
+        cbSang.setOnCheckedChangeListener(demBuoiListener);
+        cbChieu.setOnCheckedChangeListener(demBuoiListener);
+        cbToi.setOnCheckedChangeListener(demBuoiListener);
+        demBuoi();
 
         // ---- RadioGroup: chỉ chọn được một ----
         rgHeDaoTao.setOnCheckedChangeListener((group, checkedId) -> {
@@ -93,11 +105,26 @@ public class MainActivity extends AppCompatActivity {
         swThongBao.setOnCheckedChangeListener((buttonView, isChecked) ->
                 Log.d(TAG, "Nhận thông báo: " + isChecked));
 
+        // ---- NC3: bật/tắt chế độ tối ngay khi gạt Switch ----
+        swCheDoToi.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            AppCompatDelegate.setDefaultNightMode(isChecked
+                    ? AppCompatDelegate.MODE_NIGHT_YES
+                    : AppCompatDelegate.MODE_NIGHT_NO);
+            Log.d(TAG, "Chế độ tối: " + isChecked);
+        });
 
         btnXacNhan.setOnClickListener(v -> xacNhan());
         btnLamLai.setOnClickListener(v -> lamLai());
     }
 
+    /** Đếm số CheckBox buổi học đang được chọn và hiển thị ngay dưới nhóm. */
+    private void demBuoi() {
+        int dem = 0;
+        if (cbSang.isChecked()) dem++;
+        if (cbChieu.isChecked()) dem++;
+        if (cbToi.isChecked()) dem++;
+        tvDemBuoi.setText(getString(R.string.dem_buoi, dem));
+    }
 
     /** Kiểm tra dữ liệu rồi chuyển sang màn hình xác nhận. */
     private void xacNhan() {
@@ -158,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         cbToi.setChecked(false);
         swThongBao.setChecked(true);
         tgUuTien.setChecked(false);
+        if (swCheDoToi.isChecked()) swCheDoToi.setChecked(false);   // tắt lại chế độ tối
         edtHoTen.requestFocus();
     }
 }
